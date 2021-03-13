@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PublicAddressBook.DataAccess.Context;
@@ -9,9 +10,10 @@ using PublicAddressBook.DataAccess.Context;
 namespace PublicAddressBook.DataAccess.Migrations
 {
     [DbContext(typeof(PublicAddressBookContext))]
-    partial class PublicAddressBookContextModelSnapshot : ModelSnapshot
+    [Migration("20210313162701_added_separate_alternate_key_to_fields_name_and_address")]
+    partial class added_separate_alternate_key_to_fields_name_and_address
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

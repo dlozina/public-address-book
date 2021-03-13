@@ -19,6 +19,12 @@ namespace PublicAddressBook.DataAccess.Context
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Contact>()
+            .HasAlternateKey(a => new { a.Name});
+
+            modelBuilder.Entity<Contact>()
+           .HasAlternateKey(a => new { a.Address });
+
             modelBuilder.Entity<Contact>().HasData(new Contact
             { 
                 ContactId = 1,
