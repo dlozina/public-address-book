@@ -13,7 +13,8 @@ namespace PublicAddressBook.DataAccess.Context
         public PublicAddressBookContext(DbContextOptions<PublicAddressBookContext> options) : base(options) { }
 
         public DbSet<Contact> Contacts { get; set; }
-
+        
+        // Add Test Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
