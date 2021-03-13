@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PublicAdressBook.Shared\PublicAdressBook.Shared.csproj" />
+    <ProjectReference Include="..\PublicAdressBook.Shared\PublicAddressBook.Shared.csproj" />
   </ItemGroup>
 
 </Project>

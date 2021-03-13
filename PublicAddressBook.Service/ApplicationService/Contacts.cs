@@ -32,6 +32,7 @@ namespace PublicAddressBook.Service.ApplicationService
         {
             var addedEntity = _publicAddressBookContext.Contacts.Add(contact);
             _publicAddressBookContext.SaveChanges();
+
             return addedEntity.Entity;
         }
 
@@ -49,6 +50,8 @@ namespace PublicAddressBook.Service.ApplicationService
                 foundEntity.WorkPhone = contact.WorkPhone;
 
                 _publicAddressBookContext.SaveChanges();
+
+                return foundEntity;
             }
 
             return null;
