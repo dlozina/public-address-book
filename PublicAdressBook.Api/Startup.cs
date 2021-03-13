@@ -15,6 +15,10 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PublicAddressBook.Service.ApplicationService.Interface;
 using PublicAddressBook.Service.ApplicationService;
+using log4net.Config;
+using System.IO;
+using System.Reflection;
+using log4net;
 
 namespace PublicAdressBook.Api
 {
@@ -26,6 +30,8 @@ namespace PublicAdressBook.Api
         }
 
         public IConfiguration Configuration { get; }
+
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -46,6 +52,10 @@ namespace PublicAdressBook.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
+            XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
+            log.Info("Log config file loaded");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

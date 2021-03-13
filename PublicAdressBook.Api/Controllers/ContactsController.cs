@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using log4net;
+using log4net.Core;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using PublicAddressBook.Service.ApplicationService.Interface;
 using PublicAdressBook.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace PublicAdressBook.Api.Controllers
@@ -14,22 +18,53 @@ namespace PublicAdressBook.Api.Controllers
     public class ContactsController : ControllerBase
     {
         private readonly IContacts _contactsService;
+        private readonly LinkGenerator _linkGenerator;
 
-        public ContactsController(IContacts contactsService)
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+        const int maxPageSize = 5;
+
+        public ContactsController(IContacts contactsService, LinkGenerator linkGenerator)
         {
             _contactsService = contactsService;
+            _linkGenerator = linkGenerator;
         }
 
         [HttpGet]
-        public IActionResult GetAllContacts()
+        public IActionResult GetAllContacts(int page = 1, int pageSize = 2)
         {
-            return Ok( _contactsService.GetAllContacts());
+            try
+            {
+                var contacts = _contactsService.GetAllContacts();
+
+                // I want my paging information i header - My Response is Data Only, Metadata is in header
+                pageSize = AddMetaDataToHeader(page, pageSize, contacts);
+
+                return Ok(contacts.Skip(pageSize * (page - 1)).Take(pageSize));
+
+            }
+            catch(Exception ex)
+            {
+                log.Error("PublicAddressBookApiError: ", ex);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
+
+        
 
         [HttpGet("{id}")]
         public IActionResult GetContactById(int id)
         {
-            return Ok(_contactsService.GetContactById(id));
+            try
+            {
+                return Ok(_contactsService.GetContactById(id));
+            }
+            catch (Exception ex)
+            {
+                log.Error("PublicAddressBookApiError: ", ex);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            
         }
 
         [HttpPost]
@@ -44,9 +79,16 @@ namespace PublicAdressBook.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var createdContact = _contactsService.AddContact(contact);
-
-            return Created("contact", createdContact);
+            try
+            {
+                var createdContact = _contactsService.AddContact(contact);
+                return Created("contact", createdContact);
+            }
+            catch (Exception ex)
+            {
+                log.Error("PublicAddressBookApiError: ", ex);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpPut]
@@ -61,13 +103,20 @@ namespace PublicAdressBook.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var contactToUpdate = _contactsService.GetContactById(contact.ContactId);
-            if (contactToUpdate == null)
-                return NotFound();
+            try
+            {
+                var contactToUpdate = _contactsService.GetContactById(contact.ContactId);
+                if (contactToUpdate == null)
+                    return NotFound();
 
-            _contactsService.UpdateContact(contact);
-
-            return NoContent();
+                _contactsService.UpdateContact(contact);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                log.Error("PublicAddressBookApiError: ", ex);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpDelete("{id}")]
@@ -80,9 +129,45 @@ namespace PublicAdressBook.Api.Controllers
             if (contactToDelete == null)
                 return NotFound();
 
-            _contactsService.DeleteContact(id);
+            try
+            {
+                _contactsService.DeleteContact(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                log.Error("PublicAddressBookApiError: ", ex);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            
+        }
 
-            return NoContent();
+        private int AddMetaDataToHeader(int page, int pageSize, IEnumerable<Contact> contacts)
+        {
+            var totalContactsCount = contacts.Count();
+            var totalContactsPages = (int)Math.Ceiling((double)totalContactsCount / pageSize);
+
+            if (pageSize > maxPageSize)
+            {
+                pageSize = maxPageSize;
+            }
+
+            var previousLink = page > 1 ? _linkGenerator.GetPathByAction("GetAllContacts", "Contacts", values: new { page = page - 1 }) : "";
+            var nextLink = page < totalContactsPages ? _linkGenerator.GetPathByAction("GetAllContacts", "Contacts", values: new { page = page + 1 }) : "";
+
+            var paginationHeader = new
+            {
+                currentPage = page,
+                pageSize = pageSize,
+                totalCount = totalContactsCount,
+                totalPages = totalContactsPages,
+                previousPageLink = previousLink,
+                nextPageLink = nextLink
+            };
+
+            HttpContext.Response.Headers.Add("X-Pagination", Newtonsoft.Json.JsonConvert.SerializeObject(paginationHeader));
+            
+            return pageSize;
         }
     }
 }
