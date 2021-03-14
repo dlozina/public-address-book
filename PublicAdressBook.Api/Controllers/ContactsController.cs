@@ -3,6 +3,8 @@ using log4net.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.SignalR;
+using PublicAddressBook.Api.Hubs;
 using PublicAddressBook.Service.ApplicationService.Interface;
 using PublicAdressBook.Shared;
 using System;
@@ -18,16 +20,18 @@ namespace PublicAdressBook.Api.Controllers
     public class ContactsController : ControllerBase
     {
         private readonly IContacts _contactsService;
+        private readonly IHubContext<LiveUpdatesHub> _hub;
         private readonly LinkGenerator _linkGenerator;
 
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         const int maxPageSize = 5;
 
-        public ContactsController(IContacts contactsService, LinkGenerator linkGenerator)
+        public ContactsController(IContacts contactsService, IHubContext<LiveUpdatesHub> hub, LinkGenerator linkGenerator)
         {
             _contactsService = contactsService;
             _linkGenerator = linkGenerator;
+            _hub = hub;
         }
 
         [HttpGet]
@@ -82,6 +86,9 @@ namespace PublicAdressBook.Api.Controllers
             try
             {
                 var createdContact = _contactsService.AddContact(contact);
+                // Live Update for Client Apps
+                _hub.Clients.All.SendAsync("LiveUpdate");
+
                 return Created("contact", createdContact);
             }
             catch (Exception ex)
@@ -110,6 +117,9 @@ namespace PublicAdressBook.Api.Controllers
                     return NotFound();
 
                 _contactsService.UpdateContact(contact);
+                // Live Update for Client Apps
+                _hub.Clients.All.SendAsync("LiveUpdate");
+
                 return NoContent();
             }
             catch (Exception ex)
@@ -132,6 +142,9 @@ namespace PublicAdressBook.Api.Controllers
             try
             {
                 _contactsService.DeleteContact(id);
+                // Live Update for Client Apps
+                _hub.Clients.All.SendAsync("LiveUpdate");
+                
                 return NoContent();
             }
             catch (Exception ex)

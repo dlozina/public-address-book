@@ -19,6 +19,8 @@ using log4net.Config;
 using System.IO;
 using System.Reflection;
 using log4net;
+using Microsoft.AspNetCore.ResponseCompression;
+using PublicAddressBook.Api.Hubs;
 
 namespace PublicAdressBook.Api
 {
@@ -36,7 +38,7 @@ namespace PublicAdressBook.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddSignalR();
             services.AddControllers();
             services.AddDbContext<PublicAddressBookContext>(options => 
                      options.UseNpgsql(Configuration.GetConnectionString("PublicAddressBookConnection")));
@@ -57,6 +59,12 @@ namespace PublicAdressBook.Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PublicAdressBook.Api", Version = "v1" });
             });
+
+            services.AddResponseCompression(opts =>
+            {
+                opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                    new[] { "application/octet-stream" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,6 +73,8 @@ namespace PublicAdressBook.Api
             var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
             XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
             log.Info("Log config file loaded");
+
+            app.UseResponseCompression();
 
             if (env.IsDevelopment())
             {
@@ -84,6 +94,7 @@ namespace PublicAdressBook.Api
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<LiveUpdatesHub>("/liveupdateshub");
                 endpoints.MapControllers();
             });
         }
