@@ -1,6 +1,7 @@
 ﻿using PublicAddressBook.DataAccess.Context;
 using PublicAddressBook.Service.ApplicationService.Interface;
 using PublicAdressBook.Shared;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -63,6 +64,19 @@ namespace PublicAddressBook.Service.ApplicationService
 
             _publicAddressBookContext.Contacts.Remove(foundEntity);
             _publicAddressBookContext.SaveChanges();
+        }
+
+        public Tuple<bool,bool,bool> CheckUniqueContactFields(int id, string name, string address)
+        {
+            var contacts = _publicAddressBookContext.Contacts;
+
+            var notUniqueId = contacts.Any(x => x.ContactId == id);
+            var notUniqueName = contacts.Any(x => x.Name == name);
+            var notUniqueAddress = contacts.Any(x => x.Address == address);
+
+            var notUniqueContactFields = new Tuple<bool, bool, bool>(notUniqueId, notUniqueName, notUniqueAddress);
+
+            return notUniqueContactFields;
         }
     }
 }

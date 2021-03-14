@@ -39,7 +39,7 @@ namespace PublicAdressBook.Api.Controllers
             {
                 var contacts = _contactsService.GetAllContacts();
 
-                // I want my paging information i header - My Response is Data Only, Metadata is in header
+                // Paging information is in header - Response is Data Only, Metadata is in header
                 pageSize = AddMetaDataToHeader(page, pageSize, contacts);
 
                 return Ok(contacts.Skip(pageSize * (page - 1)).Take(pageSize));
@@ -71,8 +71,18 @@ namespace PublicAdressBook.Api.Controllers
             if (contact == null)
                 return BadRequest();
 
+            Tuple<bool, bool, bool> notUniqueContactFields = new Tuple<bool, bool, bool>(false, false, false);
             if (String.IsNullOrEmpty(contact.Name) || String.IsNullOrEmpty(contact.Address) || String.IsNullOrEmpty(contact.MobilePhone))
                 ModelState.AddModelError("Name/Address/MobilePhone", "Name, Address and MobilePhone shouldn't be empty");
+            else
+                notUniqueContactFields = _contactsService.CheckUniqueContactFields(contact.ContactId, contact.Name, contact.Address);
+            
+            if (notUniqueContactFields.Item1)
+                ModelState.AddModelError("ContactId", "ContactId is not unique");
+            if (notUniqueContactFields.Item2)
+                ModelState.AddModelError("Name", "Name is not unique");
+            if (notUniqueContactFields.Item3)
+                ModelState.AddModelError("Address", "Address is not unique");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -100,6 +110,7 @@ namespace PublicAdressBook.Api.Controllers
 
             if (String.IsNullOrEmpty(contact.Name) || String.IsNullOrEmpty(contact.Address) || String.IsNullOrEmpty(contact.MobilePhone))
                 ModelState.AddModelError("Name/Address/MobilePhone", "Name, Address and MobilePhone shouldn't be empty");
+            else
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -109,6 +120,13 @@ namespace PublicAdressBook.Api.Controllers
                 var contactToUpdate = _contactsService.GetContactById(contact.ContactId);
                 if (contactToUpdate == null)
                     return NotFound();
+
+                if(contactToUpdate.Name != contact.Name)
+                    ModelState.AddModelError("Name", "Name needs to be unique. To change delete this contact entry than add new entry");
+                if (contactToUpdate.Name != contact.Name)
+                    ModelState.AddModelError("Address", "Address needs to be unique. To change delete this contact entry than add new entry");
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
                 _contactsService.UpdateContact(contact);
                 // Live Update for Client Apps

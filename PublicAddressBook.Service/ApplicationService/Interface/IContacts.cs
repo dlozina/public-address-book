@@ -15,8 +15,10 @@ namespace PublicAddressBook.Service.ApplicationService.Interface
 
         Contact AddContact(Contact contact);
 
-        public Contact UpdateContact(Contact contact);
+        Contact UpdateContact(Contact contact);
 
-        public void DeleteContact(int contactId);
+        void DeleteContact(int contactId);
+
+        Tuple<bool, bool, bool> CheckUniqueContactFields(int id, string name, string address);
     }
 }

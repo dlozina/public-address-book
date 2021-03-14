@@ -15,7 +15,8 @@ namespace PublicAddressBook.Client.Pages
         private HubConnection hubConnection;
 
         private const string baseUrl = "https://localhost:44312";
-        private const string endPoint = "/Contacts";
+        private const string contactsEndPoint = "/Contacts";
+        private const string liveUpdateEndPoint = "/liveupdateshub";
 
         public IEnumerable<Contact> Contacts { get; set; }
 
@@ -25,7 +26,7 @@ namespace PublicAddressBook.Client.Pages
         protected override async Task OnInitializedAsync()
         {
             hubConnection = new HubConnectionBuilder()
-            .WithUrl(NavigationManager.ToAbsoluteUri("https://localhost:44312/liveupdateshub"))
+            .WithUrl(NavigationManager.ToAbsoluteUri(baseUrl + liveUpdateEndPoint))
             .Build();
 
             hubConnection.On("LiveUpdate", () =>
@@ -49,7 +50,7 @@ namespace PublicAddressBook.Client.Pages
 
         protected async Task GetData()
         {
-            Contacts = await HttpClient.GetFromJsonAsync<IEnumerable<Contact>>(baseUrl + endPoint);
+            Contacts = await HttpClient.GetFromJsonAsync<IEnumerable<Contact>>(baseUrl + contactsEndPoint);
             StateHasChanged();
         }
 
