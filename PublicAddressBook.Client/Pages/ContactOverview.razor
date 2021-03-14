@@ -1,0 +1,36 @@
+﻿@page "/contactoverview"
+
+<h1>Contact Overview</h1>
+
+@if (Contacts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Date of Birth</th>
+                <th>Address</th>
+                <th>MobilePhone</th>
+                <th>HomePhone</th>
+                <th>WorkPhone</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var contact in Contacts)
+            {
+                <tr>
+                    <td>@contact.Name</td>
+                    <td>@contact.DateOfBirth</td>
+                    <td>@contact.Address</td>
+                    <td>@contact.MobilePhone</td>
+                    <td>@contact.HomePhone</td>
+                    <td>@contact.WorkPhone</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

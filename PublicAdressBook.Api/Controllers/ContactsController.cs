@@ -31,7 +31,7 @@ namespace PublicAdressBook.Api.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllContacts(int page = 1, int pageSize = 2)
+        public IActionResult GetAllContacts(int page = 1, int pageSize = 4)
         {
             try
             {

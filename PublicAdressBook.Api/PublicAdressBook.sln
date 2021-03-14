@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31105.61
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PublicAddressBook.Api", "PublicAddressBook.Api.csproj", "{DB5934D4-7633-4955-80A9-8358A66C0F3A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PublicAddressBook.Api", "PublicAddressBook.Api.csproj", "{DB5934D4-7633-4955-80A9-8358A66C0F3A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PublicAddressBook.Shared", "..\PublicAdressBook.Shared\PublicAddressBook.Shared.csproj", "{9AE14B9F-7CC6-44F0-8F46-41BB325EA809}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PublicAddressBook.Shared", "..\PublicAdressBook.Shared\PublicAddressBook.Shared.csproj", "{9AE14B9F-7CC6-44F0-8F46-41BB325EA809}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PublicAddressBook.DataAccess", "..\PublicAddressBook.DataAccess\PublicAddressBook.DataAccess.csproj", "{34650E71-5159-4D17-82AF-E9C1349FCCA8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PublicAddressBook.DataAccess", "..\PublicAddressBook.DataAccess\PublicAddressBook.DataAccess.csproj", "{34650E71-5159-4D17-82AF-E9C1349FCCA8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PublicAddressBook.Service", "..\PublicAddressBook.Service\PublicAddressBook.Service.csproj", "{D0785C6A-5D7F-4DA9-BC9A-217F017B46FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PublicAddressBook.Service", "..\PublicAddressBook.Service\PublicAddressBook.Service.csproj", "{D0785C6A-5D7F-4DA9-BC9A-217F017B46FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PublicAddressBook.Client", "..\PublicAddressBook.Client\PublicAddressBook.Client.csproj", "{837C907A-20A6-4DA6-BFA4-F12201F400F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{D0785C6A-5D7F-4DA9-BC9A-217F017B46FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0785C6A-5D7F-4DA9-BC9A-217F017B46FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0785C6A-5D7F-4DA9-BC9A-217F017B46FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{837C907A-20A6-4DA6-BFA4-F12201F400F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{837C907A-20A6-4DA6-BFA4-F12201F400F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{837C907A-20A6-4DA6-BFA4-F12201F400F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{837C907A-20A6-4DA6-BFA4-F12201F400F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

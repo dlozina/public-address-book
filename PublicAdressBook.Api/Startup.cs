@@ -43,6 +43,16 @@ namespace PublicAdressBook.Api
 
             services.AddScoped<IContacts, Contacts>();
 
+            // POC Settings
+            services.AddCors(options =>
+            {
+                options.AddPolicy("Open", builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+                //options.AddPolicy(name: MyAllowSpecificOrigins, builder => 
+                //{
+                //    builder.WithOrigins("http://localhost:44350");
+                //});
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PublicAdressBook.Api", Version = "v1" });
@@ -68,6 +78,9 @@ namespace PublicAdressBook.Api
             app.UseRouting();
 
             app.UseAuthorization();
+
+            // POC Settings
+            app.UseCors("Open");
 
             app.UseEndpoints(endpoints =>
             {
