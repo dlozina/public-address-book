@@ -123,7 +123,7 @@ namespace PublicAdressBook.Api.Controllers
 
                 if(contactToUpdate.Name != contact.Name)
                     ModelState.AddModelError("Name", "Name needs to be unique. To change delete this contact entry than add new entry");
-                if (contactToUpdate.Name != contact.Name)
+                if (contactToUpdate.Address != contact.Address)
                     ModelState.AddModelError("Address", "Address needs to be unique. To change delete this contact entry than add new entry");
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
