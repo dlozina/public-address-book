@@ -1,26 +1,20 @@
+using log4net;
+using log4net.Config;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using PublicAddressBook.DataAccess.Context;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using PublicAddressBook.Service.ApplicationService.Interface;
-using PublicAddressBook.Service.ApplicationService;
-using log4net.Config;
-using System.IO;
-using System.Reflection;
-using log4net;
-using Microsoft.AspNetCore.ResponseCompression;
 using PublicAddressBook.Api.Hubs;
+using PublicAddressBook.DataAccess.Context;
+using PublicAddressBook.Service.ApplicationService;
+using PublicAddressBook.Service.ApplicationService.Interface;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 
 namespace PublicAdressBook.Api
 {
@@ -40,7 +34,7 @@ namespace PublicAdressBook.Api
         {
             services.AddSignalR();
             services.AddControllers();
-            services.AddDbContext<PublicAddressBookContext>(options => 
+            services.AddDbContext<PublicAddressBookContext>(options =>
                      options.UseNpgsql(Configuration.GetConnectionString("PublicAddressBookConnection")));
 
             services.AddScoped<IContacts, Contacts>();
@@ -49,7 +43,7 @@ namespace PublicAdressBook.Api
             services.AddCors(options =>
             {
                 options.AddPolicy("Open", builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
-                //options.AddPolicy(name: MyAllowSpecificOrigins, builder => 
+                //options.AddPolicy(name: MyAllowSpecificOrigins, builder =>
                 //{
                 //    builder.WithOrigins("http://localhost:44350");
                 //});

@@ -1,5 +1,4 @@
 ﻿using log4net;
-using log4net.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -11,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace PublicAdressBook.Api.Controllers
 {
@@ -25,7 +23,7 @@ namespace PublicAdressBook.Api.Controllers
 
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        const int maxPageSize = 5;
+        private const int maxPageSize = 5;
 
         public ContactsController(IContacts contactsService, IHubContext<LiveUpdatesHub> hub, LinkGenerator linkGenerator)
         {
@@ -45,16 +43,13 @@ namespace PublicAdressBook.Api.Controllers
                 pageSize = AddMetaDataToHeader(page, pageSize, contacts);
 
                 return Ok(contacts.Skip(pageSize * (page - 1)).Take(pageSize));
-
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 log.Error("PublicAddressBookApiError: ", ex);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
-
-        
 
         [HttpGet("{id}")]
         public IActionResult GetContactById(int id)
@@ -68,7 +63,6 @@ namespace PublicAdressBook.Api.Controllers
                 log.Error("PublicAddressBookApiError: ", ex);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            
         }
 
         [HttpPost]
@@ -131,8 +125,8 @@ namespace PublicAdressBook.Api.Controllers
 
         [HttpDelete("{id}")]
         public IActionResult DeleteContact(int id)
-        { 
-            if(id == 0)
+        {
+            if (id == 0)
                 return BadRequest();
 
             var contactToDelete = _contactsService.GetContactById(id);
@@ -144,7 +138,7 @@ namespace PublicAdressBook.Api.Controllers
                 _contactsService.DeleteContact(id);
                 // Live Update for Client Apps
                 _hub.Clients.All.SendAsync("LiveUpdate");
-                
+
                 return NoContent();
             }
             catch (Exception ex)
@@ -152,7 +146,6 @@ namespace PublicAdressBook.Api.Controllers
                 log.Error("PublicAddressBookApiError: ", ex);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            
         }
 
         private int AddMetaDataToHeader(int page, int pageSize, IEnumerable<Contact> contacts)
@@ -179,7 +172,7 @@ namespace PublicAdressBook.Api.Controllers
             };
 
             HttpContext.Response.Headers.Add("X-Pagination", Newtonsoft.Json.JsonConvert.SerializeObject(paginationHeader));
-            
+
             return pageSize;
         }
     }

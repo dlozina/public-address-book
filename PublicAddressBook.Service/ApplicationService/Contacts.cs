@@ -1,11 +1,8 @@
 ﻿using PublicAddressBook.DataAccess.Context;
 using PublicAddressBook.Service.ApplicationService.Interface;
 using PublicAdressBook.Shared;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PublicAddressBook.Service.ApplicationService
 {
@@ -40,7 +37,7 @@ namespace PublicAddressBook.Service.ApplicationService
         {
             var foundEntity = _publicAddressBookContext.Contacts.FirstOrDefault(x => x.ContactId == contact.ContactId);
 
-            if(foundEntity != null)
+            if (foundEntity != null)
             {
                 foundEntity.Name = contact.Name;
                 foundEntity.DateOfBirth = contact.DateOfBirth;
@@ -66,7 +63,6 @@ namespace PublicAddressBook.Service.ApplicationService
 
             _publicAddressBookContext.Contacts.Remove(foundEntity);
             _publicAddressBookContext.SaveChanges();
-
         }
     }
 }

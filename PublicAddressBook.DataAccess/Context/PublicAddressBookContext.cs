@@ -1,32 +1,30 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PublicAdressBook.Shared;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PublicAddressBook.DataAccess.Context
 {
     public class PublicAddressBookContext : DbContext
     {
-        public PublicAddressBookContext(DbContextOptions<PublicAddressBookContext> options) : base(options) { }
+        public PublicAddressBookContext(DbContextOptions<PublicAddressBookContext> options) : base(options)
+        {
+        }
 
         public DbSet<Contact> Contacts { get; set; }
-        
+
         // Add Test Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Contact>()
-            .HasAlternateKey(a => new { a.Name});
+            .HasAlternateKey(a => new { a.Name });
 
             modelBuilder.Entity<Contact>()
            .HasAlternateKey(a => new { a.Address });
 
             modelBuilder.Entity<Contact>().HasData(new Contact
-            { 
+            {
                 ContactId = 1,
                 Name = "Dino Lozina",
                 DateOfBirth = new DateTime(1986, 1, 8),
