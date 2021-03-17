@@ -54,6 +54,13 @@ namespace PublicAdressBook.Api.Controllers
         [HttpGet("{id}")]
         public IActionResult GetContactById(int id)
         {
+            if (id == 0)
+                return BadRequest();
+
+            var foundContact = _contactsService.GetContactById(id);
+            if (foundContact == null)
+                return NotFound();
+
             try
             {
                 return Ok(_contactsService.GetContactById(id));
@@ -74,8 +81,11 @@ namespace PublicAdressBook.Api.Controllers
             Tuple<bool, bool, bool> notUniqueContactFields = new Tuple<bool, bool, bool>(false, false, false);
             if (String.IsNullOrEmpty(contact.Name) || String.IsNullOrEmpty(contact.Address) || String.IsNullOrEmpty(contact.MobilePhone))
                 ModelState.AddModelError("Name/Address/MobilePhone", "Name, Address and MobilePhone shouldn't be empty");
-            else
-                notUniqueContactFields = _contactsService.CheckUniqueContactFields(contact.ContactId, contact.Name, contact.Address);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            notUniqueContactFields = _contactsService.CheckUniqueContactFields(contact.ContactId, contact.Name, contact.Address);
             
             if (notUniqueContactFields.Item1)
                 ModelState.AddModelError("ContactId", "ContactId is not unique");
@@ -110,7 +120,6 @@ namespace PublicAdressBook.Api.Controllers
 
             if (String.IsNullOrEmpty(contact.Name) || String.IsNullOrEmpty(contact.Address) || String.IsNullOrEmpty(contact.MobilePhone))
                 ModelState.AddModelError("Name/Address/MobilePhone", "Name, Address and MobilePhone shouldn't be empty");
-            else
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
