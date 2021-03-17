@@ -2,9 +2,9 @@ In this POC project I wanted to test couple of things in .NET 5. <br />
 
     * Shared code between Server and Client App 
     * Live updates (Signal R) 
-    * Web Api is Broadcasting changes to Db 
-    * Client Blazor WASM get notified about changes and updates view 
-    
+    * Web Api Broadcasting (changes to Db) 
+    * Client Blazor WASM receives notification
+
 POC project arhitecture:
 
 ![PhoneBookAddressPhoto](https://user-images.githubusercontent.com/28594128/111082840-a50a1280-850a-11eb-98e8-25a0c6dfd73d.jpg)
