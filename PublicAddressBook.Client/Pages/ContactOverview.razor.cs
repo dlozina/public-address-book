@@ -19,6 +19,8 @@ namespace PublicAddressBook.Client.Pages
         private const string contactsEndPoint = "/Contacts";
         private const string liveUpdateEndPoint = "/liveupdateshub";
 
+        PagingInfo pagingInfo;
+
         public IEnumerable<Contact> Contacts { get; set; }
 
         [Inject]
@@ -49,16 +51,18 @@ namespace PublicAddressBook.Client.Pages
             });
         }
 
-        protected async Task GetData()
+        protected async Task GetData(string endPoint = "")
         {
             // CORS policy on server needs to be updated to get response headers
             // https://github.com/dotnet/runtime/issues/42179
+            if (String.IsNullOrEmpty(endPoint))
+                endPoint = contactsEndPoint;
 
-            var response = await HttpClient.GetAsync(baseUrl + contactsEndPoint);
+            var response = await HttpClient.GetAsync(baseUrl + endPoint);
             if(response.IsSuccessStatusCode)
             {
                 Contacts = response.Content.ReadFromJsonAsync<IEnumerable<Contact>>().Result;
-                var pagingInfo = HeaderParser.FindAndParsePagingInfo(response.Headers);
+                pagingInfo = HeaderParser.FindAndParsePagingInfo(response.Headers);
             }
             
             StateHasChanged();
@@ -66,6 +70,22 @@ namespace PublicAddressBook.Client.Pages
 
         public bool IsConnected =>
         hubConnection.State == HubConnectionState.Connected;
+
+        protected void PreviousPage() 
+        {
+            Task.Run(async () =>
+            {
+                await GetData(pagingInfo.PreviousPageLink);
+            });
+        }
+
+        protected void NextPage()
+        {
+            Task.Run(async () =>
+            {
+                await GetData(pagingInfo.NextPageLink);
+            });
+        }
 
         public void Dispose()
         {

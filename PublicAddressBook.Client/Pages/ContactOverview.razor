@@ -33,5 +33,9 @@ else
                 </tr>
             }
         </tbody>
+
     </table>
+    <button @onclick="PreviousPage" class="btn table-btn quick-add-btn">Previous</button>
+    <label>@pagingInfo.CurrentPage of @pagingInfo.TotalPages</label>
+    <button @onclick="NextPage" class="btn table-btn quick-add-btn">Next</button>
 }
