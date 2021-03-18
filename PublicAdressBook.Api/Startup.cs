@@ -42,7 +42,7 @@ namespace PublicAdressBook.Api
             // POC Settings
             services.AddCors(options =>
             {
-                options.AddPolicy("Open", builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+                options.AddPolicy("Open", builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().WithExposedHeaders("*"));
                 //options.AddPolicy(name: MyAllowSpecificOrigins, builder =>
                 //{
                 //    builder.WithOrigins("http://localhost:44350");
