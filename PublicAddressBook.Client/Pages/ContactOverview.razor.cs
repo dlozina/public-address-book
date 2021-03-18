@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
+using PublicAddressBook.Client.Helpers;
 using PublicAdressBook.Shared;
 using System;
 using System.Collections.Generic;
@@ -50,19 +51,16 @@ namespace PublicAddressBook.Client.Pages
 
         protected async Task GetData()
         {
-            //Contacts = await HttpClient.GetFromJsonAsync<IEnumerable<Contact>>(baseUrl + contactsEndPoint);
-
             // CORS policy on server needs to be updated to get response headers
             // https://github.com/dotnet/runtime/issues/42179
 
-            IEnumerable<string> paginationHeaderValues;
             var response = await HttpClient.GetAsync(baseUrl + contactsEndPoint);
             if(response.IsSuccessStatusCode)
             {
                 Contacts = response.Content.ReadFromJsonAsync<IEnumerable<Contact>>().Result;
-                response.Headers.TryGetValues("X-Pagination", out paginationHeaderValues);
+                var pagingInfo = HeaderParser.FindAndParsePagingInfo(response.Headers);
             }
-
+            
             StateHasChanged();
         }
 
