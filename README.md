@@ -11,12 +11,14 @@ POC project arhitecture:
 
 Client before update:
 
-![BeforeChange](https://user-images.githubusercontent.com/28594128/111082838-a4717c00-850a-11eb-9b2b-8b791bb1fc7e.png)
+![BeforeChange1](https://user-images.githubusercontent.com/28594128/111696498-a900a200-8834-11eb-828a-77a7c48eae03.png)
 
 Client after update:
 
-![AfterChange](https://user-images.githubusercontent.com/28594128/111082836-a3d8e580-850a-11eb-8130-5c521ca9f306.png)
+![AfterChange1](https://user-images.githubusercontent.com/28594128/111696494-a8680b80-8834-11eb-9545-2f44362a71cf.png)
 
 Data paging solution:
 
 ![Pagging](https://user-images.githubusercontent.com/28594128/111082839-a4717c00-850a-11eb-8c46-440361977103.png)
+
+Check out simple way how to get header values on client side.
