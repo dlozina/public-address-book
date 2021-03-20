@@ -21,6 +21,9 @@ namespace PublicAddressBook.Client.Pages
 
         PagingInfo pagingInfo;
 
+        bool previousButtonDisabled = false;
+        bool nextButtonDisabled = false;
+
         public IEnumerable<Contact> Contacts { get; set; }
 
         [Inject]
@@ -61,10 +64,15 @@ namespace PublicAddressBook.Client.Pages
             var response = await HttpClient.GetAsync(baseUrl + endPoint);
             if(response.IsSuccessStatusCode)
             {
-                Contacts = response.Content.ReadFromJsonAsync<IEnumerable<Contact>>().Result;
+                Contacts = response.Content.ReadFromJsonAsync<IEnumerable<Contact>>().Result.OrderBy(x => x.ContactId);
                 pagingInfo = HeaderParser.FindAndParsePagingInfo(response.Headers);
             }
-            
+
+            if (String.IsNullOrEmpty(pagingInfo.PreviousPageLink))
+                previousButtonDisabled = true;
+            if (String.IsNullOrEmpty(pagingInfo.NextPageLink))
+                nextButtonDisabled = true;
+
             StateHasChanged();
         }
 
@@ -73,18 +81,38 @@ namespace PublicAddressBook.Client.Pages
 
         protected void PreviousPage() 
         {
-            Task.Run(async () =>
+            if (!String.IsNullOrEmpty(pagingInfo.PreviousPageLink))
             {
-                await GetData(pagingInfo.PreviousPageLink);
-            });
+                Task.Run(async () =>
+                {
+                    await GetData(pagingInfo.PreviousPageLink);
+                });
+            }
+            else
+                previousButtonDisabled = true;
+
+            if (String.IsNullOrEmpty(pagingInfo.NextPageLink))
+                nextButtonDisabled = false;
+
+            StateHasChanged();
         }
 
         protected void NextPage()
         {
-            Task.Run(async () =>
+            if (!String.IsNullOrEmpty(pagingInfo.NextPageLink))
             {
-                await GetData(pagingInfo.NextPageLink);
-            });
+                Task.Run(async () =>
+                {
+                    await GetData(pagingInfo.NextPageLink);
+                });
+            }
+            else
+                nextButtonDisabled = true;
+
+            if (String.IsNullOrEmpty(pagingInfo.PreviousPageLink))
+                previousButtonDisabled = false;
+
+            StateHasChanged();
         }
 
         public void Dispose()

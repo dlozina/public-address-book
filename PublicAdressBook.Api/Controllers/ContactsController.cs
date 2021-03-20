@@ -37,7 +37,7 @@ namespace PublicAdressBook.Api.Controllers
         {
             try
             {
-                var contacts = _contactsService.GetAllContacts();
+                var contacts = _contactsService.GetAllContacts().OrderBy(x => x.ContactId);
 
                 // Paging information is in header - Response is Data Only, Metadata is in header
                 pageSize = AddMetaDataToHeader(page, pageSize, contacts);
